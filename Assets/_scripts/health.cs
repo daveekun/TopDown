@@ -12,7 +12,7 @@ public class health : MonoBehaviour
         currentHealth = maxHealth;
     }
 
-    public void TakeDamage(int damage)
+    public virtual void TakeDamage(int damage)
     {
         // make visual shiet happen
         currentHealth -= damage;
@@ -23,7 +23,7 @@ public class health : MonoBehaviour
         }
     }
 
-    void Heal(int amount)
+    public virtual void Heal(int amount)
     {
         currentHealth += amount;
         if (currentHealth > maxHealth)

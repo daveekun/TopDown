@@ -11,7 +11,7 @@ public enum state
     checkLast
 }
 
-public class EnemyAI : MonoBehaviour
+public abstract class EnemyAI : MonoBehaviour
 {
     public Transform target;
     public Vector3 lastKnowPos;
@@ -25,6 +25,7 @@ public class EnemyAI : MonoBehaviour
     public float attackSpeed;
 
     public float moveSpeed;
+    public float smalNum = 0.05f;
 
     private void OnDrawGizmos()
     {
@@ -45,7 +46,12 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    private void Awake()
+    {
+        lastKnowPos = transform.position;
+    }
+
+    private void RequestRange()
     {
         if (Vector3.Distance(target.position, transform.position) < visionDistance)
         {
@@ -76,8 +82,9 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
+        RequestRange();
         switch (State)
         {
             case state.idle:
@@ -97,7 +104,8 @@ public class EnemyAI : MonoBehaviour
 
     public void CheckLast()
     {
-        transform.position += (lastKnowPos - transform.position).normalized * Time.deltaTime * moveSpeed;
+        if ((lastKnowPos - transform.position).magnitude > smalNum)
+            transform.position += (lastKnowPos - transform.position).normalized * Time.fixedDeltaTime * moveSpeed;
         GetComponent<SpriteRenderer>().color = Color.white;
     }
 
@@ -108,7 +116,7 @@ public class EnemyAI : MonoBehaviour
 
     public virtual void Chase()
     {
-        transform.position += (target.position - transform.position).normalized * Time.deltaTime * moveSpeed;
+        transform.position += (target.position - transform.position).normalized * Time.fixedDeltaTime * moveSpeed;
         GetComponent<SpriteRenderer>().color = Color.white;
     }
     public virtual void Idle()
